@@ -1,12 +1,18 @@
 import "./App.css";
+import Link from "next/link";
 
 export default function App() {
   return (
     <div className='flex text-gray-100 h-screen' style={{fontFamily: "Whitney"}}>
       <div className="bg-gray-900 p-3 space-y-2 overflow-y-scroll">
-          <div className="bg-gray-700 text-gray-100 w-12 h-12 rounded-full flex items-center justify-center hover:bg-brand">
+          <div className="bg-gray-700 text-gray-100 w-12 h-12 rounded-3xl hover:rounded-2xl flex items-center justify-center duration-200 hover:bg-brand hover:text-white transition-all">
             <DiscordIcon className="h-5 w-7"/>
           </div>
+          <Link href='/pages/servers/1'>
+            <a className="bg-gray-700 text-gray-100 w-12 h-12 rounded-3xl hover:rounded-2xl flex items-center justify-center duration-200 hover:bg-brand hover:text-white transition-all">
+              S1
+            </a>
+          </Link>
 
         {/* {[...Array(40)].map((_, i) => (
           <div className="bg-white text-gray-800 w-12 h-12 rounded-full flex items-center justify-center">
