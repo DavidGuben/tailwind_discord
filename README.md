@@ -1,6 +1,6 @@
 # Tailwind + MERN Stack Discord Clone
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Discord clone created with Tailwind CSS and the MERN stack.
 
 ## Available Scripts
 
