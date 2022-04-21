@@ -1,7 +1,8 @@
+import "./App.css";
 
 export default function App() {
   return (
-    <div className='flex text-gray-100 h-screen'>
+    <div className='flex text-gray-100 h-screen' style={{fontFamily: "Whitney"}}>
       <div className="bg-gray-900 p-3 space-y-2 overflow-y-scroll">
         {[...Array(40)].map((_, i) => (
           <div className="bg-white text-gray-800 w-12 h-12 rounded-full flex items-center justify-center">

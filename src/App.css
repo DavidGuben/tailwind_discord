@@ -28,11 +28,37 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+@font-face {
+  font-family: "Whitney";
+  src:url("/public/whitney/Whitney\ SSm\ Book.ttf");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Whitney";
+  src:url("/public/whitney/Whitney\ SSm\ Book.ttf");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Whitney";
+  src:url("/public/whitney/Whitney\ Medium.ttf");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Whitney";
+  src:url("/public/whitney/Whitney\ Semibold\ Regular.otf");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Ginto";
+  src:url("/public/ginto/Ginto\ Nord\ Regular.woff2.ttf");
+  font-weight: 600;
+  font-style: normal;
 }
