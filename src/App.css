@@ -28,6 +28,10 @@
   color: #61dafb;
 }
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @font-face {
   font-family: "Whitney";
   src:url("/public/whitney/Whitney\ SSm\ Book.ttf");
