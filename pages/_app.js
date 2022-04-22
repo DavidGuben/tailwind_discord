@@ -5,6 +5,7 @@ import '../app.css';
 import '../styles.css';
 import Link from "next/link";
 import { useRouter } from 'next/router';
+import * as Icons from "../components/icons"
 
 let servers = [
   {id: "1", img: "walmart.png"},
@@ -14,6 +15,8 @@ let servers = [
 ]
 
 function MyApp({ Component, pageProps }) {
+  let router = useRouter()
+
   return (
     <>
       <Head>
@@ -24,13 +27,13 @@ function MyApp({ Component, pageProps }) {
       <div className='flex text-gray-100 h-screen' style={{fontFamily: "Whitney"}}>
         <div className="bg-gray-900 p-3 space-y-2 overflow-y-scroll">
           <NavLink href='/'>
-            <DiscordIcon className="h-5 w-7"/>
+            <Icons.Discord className="h-5 w-7"/>
           </NavLink>
 
           <hr className="border-t-white/[.06] border-t-2 rounded mx-2"/>
 
           {servers.map(server => (
-            <NavLink href={`/servers/${server.id}`} key={server.id}>
+            <NavLink href={`/servers/${server.id}/channels/1`} active={+router.query.sid === +server.id} key={server.id}>
              <img src={`/servers/${server.img}`} alt="server 1"/>
             </NavLink>
           ))}
@@ -60,15 +63,16 @@ function DiscordIcon(props) {
   )
 }
 
-function NavLink({ href, children }) {
+function NavLink({ href, active, children }) {
   let router = useRouter();
+  active ||= router.asPath === href
 
   return (
     <Link href={href}>
       <a className="relative block group">
         <div className="flex absolute h-full items-center -left-3">
           <div className={`${
-            router.asPath === href
+            active
               ? "h-10" 
               : "h-5 scale-0 opacity-0 group-hover:opacity-100 group-hover:scale-100"
         } w-1 bg-white rounded-r transition-all duration-200 origin-left`}></div>
@@ -76,7 +80,7 @@ function NavLink({ href, children }) {
 
         <div className="group-active:translate-y-px">
           <div className={`${
-            router.asPath === href
+            active
               ? "rounded-2xl bg-brand text-white"
               : "group-hover:bg-brand group-hover:text-white group-hover:rounded-2xl text-gray-100 bg-gray-700 rounded-3xl"
             }  w-12 h-12 flex items-center justify-center duration-200 transition-all overflow-hidden`}

@@ -1,5 +1,7 @@
-import * as Icons from "../../components/icons"
-import data from "../../data.json"
+import * as Icons from "../../../../components/icons"
+import data from "../../../../data.json"
+import Link from 'next/link'
+import { useRouter } from "next/router"
 
 export default function Server() {
     
@@ -8,11 +10,11 @@ export default function Server() {
         <div className="bg-gray-800 w-60 flex flex-col">
             <button className="px-3 h-12 text-white shadow-sm flex items-center font-title text-base-[15px] hover:bg-gray-550/[0.16] transition">
                 <div className="relative w-4 h-4 mr-1">
-                    <Icons.VerifiedIcon className="absolute w-4 h-4 text-gray-550" />
-                    <Icons.CheckIcon className="absolute w-4 h-4" />
+                    <Icons.Verified className="absolute w-4 h-4 text-gray-550" />
+                    <Icons.Check className="absolute w-4 h-4" />
                 </div>
                 Tailwind CSS
-                <Icons.ChevronIcon className="w-[18px] h-[18px] ml-auto opacity-80" />
+                <Icons.Chevron className="w-[18px] h-[18px] ml-auto opacity-80" />
             </button>
 
             <div className="text-gray-300 flex-1 overflow-y-scroll font-medium pt-3 space-y-[21px]">
@@ -21,7 +23,7 @@ export default function Server() {
                     <div key={category.id}>
                         {category.label && (
                             <button className="flex items-center px-0.5 text-xs font-title uppercase tracking-wide">
-                                <Icons.ArrowIcon className="w-3 h-3 mr-0.5"/>
+                                <Icons.Arrow className="w-3 h-3 mr-0.5"/>
                                 {category.label}
                             </button>
                         )}
@@ -51,16 +53,23 @@ export default function Server() {
 }
 
 function ChannelLink({channel}) {
-    // let Icon = channel.icon ? Icons[channel.icon] : Icons.HashtagIcon;
+    let Icon = channel.icon ? Icons[channel.icon] : Icons.Hashtag;
+    let router = useRouter();
+    let active = +channel.id === +router.query.cid;
+
     return (
-        <a
-            key={channel.id}
-            href="#"
-            className="flex items-center text-gray-300 px-2 mx-2 py-1 hover:bg-gray-550/[0.16] rounded group hover:text-gray-100"
-        >
-            <Icons.HashtagIcon className="w-5 h-5 mr-1.5 text-gray-400"/>
-            {channel.label}
-            <Icons.AddPersonIcon className="w-4 h-4 ml-auto text-gray-200 opacity-0 group-hover:opacity-100 hover:text-gray-100"/>
-        </a>
+        <Link href={`/servers/1/channels/${channel.id}`}>
+            <a
+                className={`${
+                    active 
+                    ? "text-white bg-gray-550/[0.32]" 
+                    : "text-gray-300 hover:bg-gray-550/[0.16] hover:text-gray-100"
+                } flex items-center px-2 mx-2 py-1 rounded group`}
+            >
+                <Icon className="w-5 h-5 mr-1.5 text-gray-400"/>
+                {channel.label}
+                <Icons.AddPerson className="w-4 h-4 ml-auto text-gray-200 opacity-0 group-hover:opacity-100 hover:text-gray-100"/>
+            </a>
+        </Link>
     )
 }
