@@ -1,9 +1,25 @@
-import * as Icons from "../../../../components/icons"
-import data from "../../../../data.json"
-import Link from 'next/link'
+import * as Icons from "../../../../components/icons";
+import {data} from "../../../../data";
+
+import Link from "next/link"
 import { useRouter } from "next/router"
+import { useState } from "react"
 
 export default function Server() {
+    let [closedCategories, setClosedCategories] = useState([]);
+    let router = useRouter();
+    let server = data.find((server) => +server.id === +router.query.sid);
+    let channel = server.categories
+        .map((c) => c.channels)
+        .flat()
+        .find((channel) => +channel.id === +router.query.cid)
+
+    function toggleCategory(categoryId) {
+        setClosedCategories(closedCategories => closedCategories.includes(categoryId)
+            ? closedCategories.filter(id => id !== categoryId)
+            : [...closedCategories, categoryId]
+        );
+    }
     
     return (
         <>
@@ -19,32 +35,86 @@ export default function Server() {
 
             <div className="text-gray-300 flex-1 overflow-y-scroll font-medium pt-3 space-y-[21px]">
                 
-                {data['1'].categories.map(category => (
+                {server.categories.map(category => (
                     <div key={category.id}>
                         {category.label && (
-                            <button className="flex items-center px-0.5 text-xs font-title uppercase tracking-wide">
-                                <Icons.Arrow className="w-3 h-3 mr-0.5"/>
+                            <button onClick={() => toggleCategory(category.id)} className="flex items-center px-0.5 text-xs font-title uppercase tracking-wide hover:text-gray-100 w-full">
+                                <Icons.Arrow className={`${
+                                    closedCategories.includes(category.id)
+                                    ? "-rotate-90"
+                                    : ""
+                                    } w-3 h-3 mr-0.5 transition duration-200`}/>
                                 {category.label}
                             </button>
                         )}
-                    
 
-                    <div className="space-y-0.5 mt-[5px]">
-                        {category.channels.map((channel) => (
-                            <ChannelLink channel={channel} key={channel.id}/>
-                        ))}
-                </div>
-                </div>
-                ))}
-
-                
+                        <div className="space-y-0.5 mt-[5px]">
+                            {category.channels.filter((channel) => {
+                                let categoryIsOpen = !closedCategories.includes(category.id);
+                                return categoryIsOpen || channel.unread
+                            }).map((channel) => (
+                                <ChannelLink channel={channel} key={channel.id}/>
+                            ))}
+                        </div>
+                    </div>
+                ))}   
             </div>
         </div>
-        <div className="bg-gray-700 flex-1 flex flex-col">
-        <div className="px-3 h-12 flex items-center shadow-sm">general</div>
-            <div className="p-3 flex-1 space-y-4 overflow-y-scroll">
-            {[...Array(40)].map((_, i) => (
-                <p>Message {i}. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <div className="bg-gray-700 flex-1 flex flex-col flex-shrink min-w-0">
+        <div className="px-2 h-12 flex items-center shadow-sm">
+            <div className="flex items-center">
+                <Icons.Hashtag className="w-6 h-6 mx-2 font-semibold text-gray-400" />
+                <span className="mr-2 text-white font-title whitespace-nowrap">
+                    {channel.label}
+                </span>
+            </div>
+
+            {channel.description && (
+                <>
+                    <div className="w-px h-6 mx-2 bg-white/[.06]"></div>
+                    <div className="text-sm font-medium text-gray-200 mx-2 truncate">
+                        {channel.description}
+                    </div>
+                </>
+            )}
+
+            <div className="flex items-center ml-auto">
+                <button className="text-gray-200 hover:text-gray-100">
+                    <Icons.HashtagWithSpeechBubble className="w-6 h-6 mx-2" />
+                </button>
+                <button className="text-gray-200 hover:text-gray-100">
+                    <Icons.Bell className="w-6 h-6 mx-2" />
+                </button>
+                <button className="text-gray-200 hover:text-gray-100">
+                    <Icons.Pin className="w-6 h-6 mx-2" />
+                </button>
+                <button className="text-gray-200 hover:text-gray-100">
+                    <Icons.People className="w-6 h-6 mx-2" />
+                </button>
+                <div className="mx-2 relative">
+                    <input type="text" placeholder="Search" className="bg-gray-900 border-none h-6 w-36 rounded text-sm font-medium placeholder-gray-400 px-1.5" />
+                    <div className="absolute right-0 inset-y-0 items-center flex">
+                        <Icons.Spyglass className="w-4 h-4 mr-1.5 text-gray-400"/>
+                    </div>
+                </div>
+                <button className="text-gray-200 hover:text-gray-100">
+                    <Icons.Inbox className="w-6 h-6 mx-2" />
+                </button>
+                <button className="text-gray-200 hover:text-gray-100">
+                    <Icons.QuestionCircle className="w-6 h-6 mx-2" />
+                </button>
+            </div>
+
+        </div>
+            <div className="flex-1 overflow-y-scroll">
+            {channel.messages.map((message, i) => (
+                <div key={message.id}>
+                    {i === 0 || message.user !== channel.messages[i - 1].user ? (
+                        <MessageWithUser message={message} />
+                    ) : (
+                        <Message message={message} />
+                    )} 
+                </div>
             ))}
             </div>
         </div>
@@ -55,21 +125,67 @@ export default function Server() {
 function ChannelLink({channel}) {
     let Icon = channel.icon ? Icons[channel.icon] : Icons.Hashtag;
     let router = useRouter();
+    let server = data.find((server) => +server.id === +router.query.sid);
     let active = +channel.id === +router.query.cid;
+    let state = active
+        ? "active"
+        : channel.unread
+        ? "inactiveUnread"
+        : "inactiveRead";
+    let classes = {
+        active: 'text-white bg-gray-550/[0.32]',
+        inactiveUnread: "text-white hover:bg-gray-550/[0.16] active:bg-gray-550/[0.24]",
+        inactiveRead: "text-gray-300 hover:bg-gray-550/[0.16] hover:text-gray-100 active:bg-gray-550/[0.24]",
+    }
+
+
 
     return (
-        <Link href={`/servers/1/channels/${channel.id}`}>
+        <Link href={`/servers/${server.id}/channels/${channel.id}`}>
             <a
-                className={`${
-                    active 
-                    ? "text-white bg-gray-550/[0.32]" 
-                    : "text-gray-300 hover:bg-gray-550/[0.16] hover:text-gray-100"
-                } flex items-center px-2 mx-2 py-1 rounded group`}
+                className={`${classes[state]} flex items-center px-2 mx-2 py-1 rounded group relative`}
             >
+                {state === 'inactiveUnread' && (
+                    <div className="absolute w-1 h-2 bg-white left-0 -ml-2 rounded-r-full"></div>
+                )}
                 <Icon className="w-5 h-5 mr-1.5 text-gray-400"/>
                 {channel.label}
                 <Icons.AddPerson className="w-4 h-4 ml-auto text-gray-200 opacity-0 group-hover:opacity-100 hover:text-gray-100"/>
             </a>
         </Link>
+    )
+}
+
+function MessageWithUser({message}) {
+    return (
+        <div className="leading-[22px] mt-[17px] flex pl-4 pr-16 py-0.5 hover:bg-gray-900/[.07]">
+                        <img 
+                            className="w-10 h-10 mr-4 rounded-full mt-0.5"
+                            src={message.avatarUrl}
+                            alt=""
+                         />
+                        <div>
+                            <p className="flex items-baseline">
+                                <span className="mr-2 font-medium text-green-400">
+                                    {message.user}
+                                </span>
+                                <span className="text-xs font-medium text-gray-400">
+                                    {message.date}
+                                </span>
+                            </p>
+                            <p className="text-gray-100">
+                                {message.text}
+                            </p>
+                            
+                        </div>
+            </div>
+    )
+}
+
+function Message({message}) {
+    return (
+        <div className="pl-4 pr-16 py-0.5 hover:bg-gray-900/[.07] leading-[22px]">
+            <p className="text-gray-100 pl-14">{message.text}</p>
+        </div>
     )
 }

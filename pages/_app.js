@@ -1,21 +1,22 @@
 // import App from 'next/app'
-import Head from "next/head";
-import "tailwindcss/tailwind.css";
-import '../app.css';
-import '../styles.css';
-import Link from "next/link";
-import { useRouter } from 'next/router';
+import Head from "next/head"
+
+import "tailwindcss/tailwind.css"
+import "../app.css"
+import "../styles.css"
+
+import Link from "next/link"
+import { useRouter } from "next/router"
+
 import * as Icons from "../components/icons"
 
-let servers = [
-  {id: "1", img: "walmart.png"},
-  {id: "2", img: "att.png"},
-  {id: "3", img: "nasa.png"},
-  {id: "4", img: "telegram.png"},
-]
+import {data} from "../data"
 
 function MyApp({ Component, pageProps }) {
   let router = useRouter()
+  if(!router.isReady) {
+    return null;
+  }
 
   return (
     <>
@@ -32,8 +33,8 @@ function MyApp({ Component, pageProps }) {
 
           <hr className="border-t-white/[.06] border-t-2 rounded mx-2"/>
 
-          {servers.map(server => (
-            <NavLink href={`/servers/${server.id}/channels/1`} active={+router.query.sid === +server.id} key={server.id}>
+          {data.map(server => (
+            <NavLink href={`/servers/${server.id}/channels/${server.categories[0].channels[0].id}`} active={+router.query.sid === +server.id} key={server.id}>
              <img src={`/servers/${server.img}`} alt="server 1"/>
             </NavLink>
           ))}

@@ -6,7 +6,7 @@
           "id": 1,
           "label": "",
           "channels": [
-            { "id": 1, "label": "welcome", "icon": "Book" },
+            { "id": 1, "label": "welcome", "icon": "Book", "description": "Introduction to the Tailwind CSS framework and community." },
             { "id": 2, "label": "announcements", "icon": "Speakerphone" }
           ]
         },
