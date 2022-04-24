@@ -25,8 +25,8 @@ function MyApp({ Component, pageProps }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       
-      <div className='flex text-gray-100 h-screen' style={{fontFamily: "Whitney"}}>
-        <div className="bg-gray-900 p-3 space-y-2 overflow-y-scroll">
+      <div className='flex text-gray-100 h-screen'>
+        <div className="hidden md:block bg-gray-900 p-3 space-y-2 overflow-y-scroll">
           <NavLink href='/'>
             <Icons.Discord className="h-5 w-7"/>
           </NavLink>
